@@ -7,12 +7,12 @@ assignees: ''
 
 ---
 
-**As a** [role]  
-**I need** [function]  
-**So that** [benefit]  
+**As a** Administrator  
+**I need** store clients accounts  
+**So that** add API REST to read, update, delete and listing clients  
       
 ### Details and Assumptions
-    * [document what you know]      
+    * To develop in Python Flask     
 
 ### Acceptance Criteria     
     gherkin 
