@@ -122,7 +122,7 @@ Please only use these commands for working stand-alone on your own computer with
 
 You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
 
-## Environment Setup
+## Local Environment Setup
 
 To ensure the proper functioning of the environment, follow these steps:
 
@@ -141,7 +141,7 @@ To ensure the proper functioning of the environment, follow these steps:
    python -m nose -vv --with-spec --spec-color --with-coverage --cover-erase --cover-package=service
    ```
 
-## Running Tests
+## Local Running Tests
 
 To ensure the quality of the code, you can run tests with coverage and specific unit tests as follows:
 
