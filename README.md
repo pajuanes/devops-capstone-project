@@ -122,6 +122,39 @@ Please only use these commands for working stand-alone on your own computer with
 
 You can now perform Tekton development locally, just like in the Cloud IDE lab environment.
 
+## Environment Setup
+
+To ensure the proper functioning of the environment, follow these steps:
+
+1. Upgrade Python installation tools:
+   ```bash
+   python -m pip install --upgrade pip setuptools wheel
+   ```
+
+2. Install project dependencies:
+   ```bash
+   python -m pip install -r requirements.txt
+   ```
+
+3. Run tests with coverage:
+   ```bash
+   python -m nose -vv --with-spec --spec-color --with-coverage --cover-erase --cover-package=service
+   ```
+
+## Running Tests
+
+To ensure the quality of the code, you can run tests with coverage and specific unit tests as follows:
+
+1. **Run all tests with coverage:**
+   ```bash
+   python -m nose -vv --with-coverage --cover-erase --cover-package=service
+   ```
+
+2. **Run specific unit tests by file:**
+   ```bash
+   python -m nose -vv tests/test_log_handlers.py
+   ```
+
 ## Author
 
 [John Rofrano](https://www.coursera.org/instructor/johnrofrano), Senior Technical Staff Member, DevOps Champion, @ IBM Research, and Instructor @ Coursera
