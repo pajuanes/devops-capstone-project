@@ -153,7 +153,7 @@ class TestAccountService(TestCase):
         account.create()
 
         # Send a request to read the account
-        response = self.client.get(f"/accounts/{account.id}")
+        response = self.client.get(f"{BASE_URL}/{account.id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check the data is correct
@@ -170,9 +170,11 @@ class TestAccountService(TestCase):
         # Create a test account
         account = AccountFactory()
         account.create()
+        resp = self.client.post(BASE_URL, json=account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         # Send a request to update the account
-        response = self.client.put(f"/accounts/{account.id}", json=account.serialize())
+        response = self.client.put(f"{BASE_URL}/{account.id}", json=account.serialize())
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Check the data is correct
@@ -183,30 +185,20 @@ class TestAccountService(TestCase):
         self.assertEqual(data["phone_number"], account.phone_number)
         self.assertEqual(data["date_joined"], str(account.date_joined))
 
-        # # Simulate the account being deleted from the database
-        # with db.session() as session:
-        #     deleted_account = session.get(Account, account.id)
-        # self.assertIsNone(deleted_account, "The account should no longer exist in the database")
-
-        # # Send a request to update the account
-        # response = self.client.put(f"/accounts/{account.id}", json=account.serialize())
-        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-        # # Check the error message
-        # data = response.get_json()
-        # self.assertIn("Account with id", data["message"])
-        # self.assertIn("not found", data["message"])
+        
 
     def test_delete_account(self):
         """It should Delete an existing Account"""
         # Create a test account
         account = AccountFactory()
         account.create()
+        resp = self.client.post(BASE_URL, json=account.serialize())
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         # Send a request to delete the account
-        response = self.client.delete(f"/accounts/{account.id}")
+        response = self.client.delete(f"{BASE_URL}/{account.id}")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         # Check that the account was deleted
-        response = self.client.get(f"/accounts/{account.id}")
+        response = self.client.get(f"{BASE_URL}/{account.id}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
