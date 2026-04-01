@@ -59,6 +59,30 @@ make db
 
 You can use the `docker ps` command to make sure that postgres is up and running.
 
+### PostgreSQL on Windows (local development)
+
+If you are running PostgreSQL natively on Windows instead of Docker, use the following commands:
+
+**Check if PostgreSQL is already using port 5432:**
+
+```cmd
+netstat -ano | findstr 5432
+```
+
+This lists all processes listening on port 5432. If the port is in use, note the PID in the last column and check it with `tasklist | findstr <PID>`.
+
+**Start the PostgreSQL service (PowerShell as Administrator):**
+
+```powershell
+Start-Service postgresql-x64-18
+```
+
+Replace `postgresql-x64-18` with your installed version if different (e.g. `postgresql-x64-14`, `postgresql-x64-16`). To check the exact service name run:
+
+```powershell
+Get-Service | Where-Object { $_.Name -like "*postgresql*" }
+```
+
 ## Project layout
 
 The code for the microservice is contained in the `service` package. All of the test are in the `tests` folder. The code follows the **Model-View-Controller** pattern with all of the database code and business logic in the model (`models.py`), and all of the RESTful routing on the controller (`routes.py`).
@@ -152,8 +176,37 @@ To ensure the quality of the code, you can run tests with coverage and specific 
 
 2. **Run specific unit tests by file:**
    ```bash
-   python -m nose -vv tests/test_log_handlers.py
+   python -m nose -vv service/common/log_handlers.py
    ```
+
+## Generación de Reporte de Cobertura
+
+Para generar un reporte de cobertura detallado y ejecutar todos los tests, puedes usar el siguiente comando:
+
+```bash
+python -m coverage run --source=service -m unittest discover -s tests -p "test*.py" && coverage report -m && coverage html
+```
+
+Esto ejecutará los tests, mostrará un desglose de la cobertura en la consola y generará un reporte HTML en el directorio `htmlcov`. Puedes abrir el archivo `index.html` en tu navegador para visualizar el reporte de cobertura de manera interactiva.
+
+### Running Unit Tests
+
+To run the unit tests for this project, you can use the following command:
+
+```bash
+python -m unittest discover -s tests/unit -p "test*.py" -v
+pytest -v -s tests/unit/test_cli_commands.py
+```
+
+### Running Integration Tests
+
+To run the integration tests for this project, you can use the following command:
+
+```bash
+python -m unittest discover -s tests/integration -p "test*.py" -v
+pytest -v -s tests/integration/test_models.py
+pytest -v -s tests/integration/test_routes.py
+```
 
 ## Author
 

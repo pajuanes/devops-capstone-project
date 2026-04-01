@@ -8,6 +8,7 @@ Test cases can be run with the following:
 import os
 import logging
 from unittest import TestCase
+from unittest.mock import patch
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
 from service.models import db, Account, init_db
@@ -124,3 +125,88 @@ class TestAccountService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # ADD YOUR TEST CASES HERE ...
+
+    def test_list_accounts(self):
+        """It should list all accounts"""
+        # Create some test accounts
+        accounts = self._create_accounts(3)
+
+        # Send a request to list all accounts
+        response = self.client.get("/list_accounts")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check the data is correct
+        data = response.get_json()
+        self.assertEqual(len(data), 3)
+        for i, account in enumerate(accounts):
+            self.assertEqual(data[i]["name"], account.name)
+            self.assertEqual(data[i]["email"], account.email)
+            self.assertEqual(data[i]["address"], account.address)
+            self.assertEqual(data[i]["phone_number"], account.phone_number)
+            self.assertEqual(data[i]["date_joined"], str(account.date_joined))
+        return accounts
+
+    def test_read_account(self):
+        """ Read a test account """
+        # Create a test account
+        account = AccountFactory()
+        account.create()
+
+        # Send a request to read the account
+        response = self.client.get(f"/accounts/{account.id}")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check the data is correct
+        data = response.get_json()
+        self.assertEqual(data["name"], account.name)
+        self.assertEqual(data["email"], account.email)
+        self.assertEqual(data["address"], account.address)
+        self.assertEqual(data["phone_number"], account.phone_number)
+        self.assertEqual(data["date_joined"], str(account.date_joined))
+        return account
+
+    def test_update_account(self):
+        """It should Update an existing Account"""
+        # Create a test account
+        account = AccountFactory()
+        account.create()
+
+        # Send a request to update the account
+        response = self.client.put(f"/accounts/{account.id}", json=account.serialize())
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Check the data is correct
+        data = response.get_json()
+        self.assertEqual(data["name"], account.name)
+        self.assertEqual(data["email"], account.email)
+        self.assertEqual(data["address"], account.address)
+        self.assertEqual(data["phone_number"], account.phone_number)
+        self.assertEqual(data["date_joined"], str(account.date_joined))
+
+        # # Simulate the account being deleted from the database
+        # with db.session() as session:
+        #     deleted_account = session.get(Account, account.id)
+        # self.assertIsNone(deleted_account, "The account should no longer exist in the database")
+
+        # # Send a request to update the account
+        # response = self.client.put(f"/accounts/{account.id}", json=account.serialize())
+        # self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+        # # Check the error message
+        # data = response.get_json()
+        # self.assertIn("Account with id", data["message"])
+        # self.assertIn("not found", data["message"])
+
+    def test_delete_account(self):
+        """It should Delete an existing Account"""
+        # Create a test account
+        account = AccountFactory()
+        account.create()
+
+        # Send a request to delete the account
+        response = self.client.delete(f"/accounts/{account.id}")
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+        # Check that the account was deleted
+        response = self.client.get(f"/accounts/{account.id}")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
