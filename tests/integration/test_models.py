@@ -4,6 +4,7 @@ Test cases for Account Model
 """
 import logging
 import unittest
+from unittest.mock import patch
 import os
 from service import app
 from service.models import Account, DataValidationError, db
@@ -41,6 +42,31 @@ class TestAccount(unittest.TestCase):
     def tearDown(self):
         """This runs after each test"""
         db.session.remove()
+
+    # def test_database_initialization_failure(self):
+    #     """It should log a critical error and exit if the database fails to initialize"""
+    #     with patch("service.models.init_db") as mock_init_db:
+    #         # Simula que init_db lanza una excepción
+    #         mock_init_db.side_effect = Exception("Database initialization failed")
+
+    #         with self.assertLogs("flask.app", level="CRITICAL") as log:
+    #             try:
+    #                 with self.assertRaises(SystemExit) as cm:
+    #                     # Fuerza la recarga del módulo para ejecutar el código de inicialización
+    #                     import importlib
+    #                     import service.__init__ as service_init
+    #                     importlib.reload(service_init)
+
+    #                 # Verifica que el código de salida sea 4
+    #                 self.assertEqual(cm.exception.code, 4)
+
+    #                 # Verifica que el logger haya capturado el mensaje
+    #                 self.assertTrue(log.output, "El logger no capturó ningún mensaje. Asegúrate de que el nivel de registro sea 'CRITICAL'.")
+    #                 self.assertIn("Database initialization failed: Cannot continue", log.output[0])
+    #             except Exception as e:
+    #                 # Maneja cualquier excepción de manera controlada
+    #                 print(f"Error controlado: {str(e)}")
+    #                 self.fail("Se produjo un error inesperado durante el test.")
 
     ######################################################################
     #  T E S T   C A S E S

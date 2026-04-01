@@ -16,6 +16,18 @@ def db_create():
     Recreates a local database. You probably should not use this on
     production. ;-)
     """
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
+    print(f"Objeto db utilizado: {db}")
+    try:
+        print("Ejecutando db.drop_all()")
+        db.drop_all()
+
+        print("Ejecutando db.create_all()")
+        db.create_all()
+
+        print("Ejecutando db.session.commit()")
+        db.session.commit()
+
+        print("Base de datos creada exitosamente.")
+    except Exception as e:
+        print(f"Error al recrear la base de datos: {e}")
+        raise
